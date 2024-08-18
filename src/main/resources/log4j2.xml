@@ -1,0 +1,15 @@
+<Configuration status="ERROR" shutdownHook="disable">
+    <Appenders>
+        <Console name="STDOUT" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss} [%t] %-5level %logger{3} - %msg%n"/>
+        </Console>
+    </Appenders>
+
+    <Loggers>
+        <Logger name="com.smrtb" level="DEBUG"/>
+        <Logger name="org.reset" level="DEBUG"/>
+        <Root level="OFF">
+            <AppenderRef ref="STDOUT" />
+        </Root>
+    </Loggers>
+</Configuration>
