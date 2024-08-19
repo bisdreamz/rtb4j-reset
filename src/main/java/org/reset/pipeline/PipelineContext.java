@@ -1,4 +1,4 @@
-package pipeline;
+package org.reset.pipeline;
 
 import com.smrtb.rtb4j.library.pipeline.AuctionPipeline;
 import com.smrtb.rtb4j.library.pipeline.BlockingContext;

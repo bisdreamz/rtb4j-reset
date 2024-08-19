@@ -2,16 +2,20 @@ package org.reset;
 
 import com.smrtb.rtb4j.library.Rtb4j;
 import com.smrtb.rtb4j.library.RtbConfig;
+import com.smrtb.rtb4j.library.pipeline.AuctionPipeline;
 import com.smrtb.rtb4j.library.pipeline.TaskPipeline;
 import com.smrtb.rtb4j.library.rtb.WebServer;
 import com.smrtb.rtb4j.library.rtb.common.NotificationFields;
+import com.smrtb.rtb4j.library.rtb.common.cache.LocalTrackerCache;
+import com.smrtb.rtb4j.library.rtb.common.models.NotificationEvent;
 import com.smrtb.rtb4j.library.rtb.pipeline.AuctionContext;
 import io.vertx.core.VertxOptions;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.reset.server.EventRoutes;
 import org.reset.server.ServerRoutes;
-import pipeline.AuctionPipelineBuilder;
-import pipeline.PipelineContext;
+import org.reset.pipeline.AuctionPipelineBuilder;
+import org.reset.pipeline.PipelineContext;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
@@ -59,8 +63,15 @@ public class Main {
                 return CompletableFuture.completedFuture("hi");
             });
 
+            // Register notification event handler for burl, nurl, beacon etc
+            AuctionPipeline<NotificationEvent> notificationPipeline = new AuctionPipeline<>(rtb4j);
+            EventRoutes.registerNotificationsHandler(server, notificationPipeline, new LocalTrackerCache(),
+                    rtb4j.conf().getNotifications());
+
             return CompletableFuture.completedFuture(null);
         });
+
+
 
         startupPipeline.execute().whenComplete((ignored, ex) -> {
             if (ex != null)

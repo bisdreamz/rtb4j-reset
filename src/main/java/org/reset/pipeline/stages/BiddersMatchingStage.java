@@ -1,4 +1,4 @@
-package pipeline.stages;
+package org.reset.pipeline.stages;
 
 import com.smrtb.rtb4j.library.pipeline.AuctionStage;
 import com.smrtb.rtb4j.library.pipeline.StageState;

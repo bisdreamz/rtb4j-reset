@@ -1,4 +1,4 @@
-package pipeline;
+package org.reset.pipeline;
 
 import com.smrtb.rtb4j.library.Rtb4j;
 import com.smrtb.rtb4j.library.pipeline.AuctionPipeline;
@@ -9,7 +9,7 @@ import com.smrtb.rtb4j.library.rtb.common.cache.LocalTrackerCache;
 import com.smrtb.rtb4j.library.rtb.common.cache.TrackerValueCache;
 import com.smrtb.rtb4j.library.rtb.pipeline.AuctionContext;
 import com.smrtb.rtb4j.library.rtb.stages.auction.*;
-import pipeline.stages.BiddersMatchingStage;
+import org.reset.pipeline.stages.BiddersMatchingStage;
 
 public class AuctionPipelineBuilder {
 
