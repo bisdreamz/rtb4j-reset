@@ -7,9 +7,9 @@ import com.smrtb.rtb4j.library.rtb.NotificationUrlProducer;
 import com.smrtb.rtb4j.library.rtb.common.Ip2LocationClient;
 import com.smrtb.rtb4j.library.rtb.common.cache.LocalTrackerCache;
 import com.smrtb.rtb4j.library.rtb.common.cache.TrackerValueCache;
-import com.smrtb.rtb4j.library.rtb.pipeline.AuctionContext;
+import com.smrtb.rtb4j.library.rtb.pipeline.auction.AuctionContext;
 import com.smrtb.rtb4j.library.rtb.stages.auction.*;
-import org.reset.pipeline.stages.BiddersMatchingStage;
+import org.reset.pipeline.stages.auction.BiddersMatchingStage;
 
 public class AuctionPipelineBuilder {
 

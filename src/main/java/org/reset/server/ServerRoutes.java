@@ -4,7 +4,7 @@ import com.smrtb.rtb4j.library.pipeline.AuctionPipeline;
 import com.smrtb.rtb4j.library.rtb.NoBidReasons;
 import com.smrtb.rtb4j.library.rtb.WebServer;
 import com.smrtb.rtb4j.library.rtb.common.models.CodeDetail;
-import com.smrtb.rtb4j.library.rtb.pipeline.AuctionContext;
+import com.smrtb.rtb4j.library.rtb.pipeline.auction.AuctionContext;
 import com.smrtb.rtb4j.openrtb2x.response.BidResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

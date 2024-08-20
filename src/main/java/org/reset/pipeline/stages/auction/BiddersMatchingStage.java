@@ -1,10 +1,8 @@
-package org.reset.pipeline.stages;
+package org.reset.pipeline.stages.auction;
 
 import com.smrtb.rtb4j.library.pipeline.AuctionStage;
 import com.smrtb.rtb4j.library.pipeline.StageState;
-import com.smrtb.rtb4j.library.rtb.NoBidReasons;
-import com.smrtb.rtb4j.library.rtb.common.models.CodeDetail;
-import com.smrtb.rtb4j.library.rtb.pipeline.AuctionContext;
+import com.smrtb.rtb4j.library.rtb.pipeline.auction.AuctionContext;
 import org.reset.data.BidderConfigs;
 
 import java.util.concurrent.CompletableFuture;
@@ -12,7 +10,7 @@ import java.util.concurrent.CompletableFuture;
 /**
  * Stage is responsible for injecting the list of matching bidders which
  * are initially eligible to receive the request. Other stages may
- * set a <i>skipReason</i> on the {@link com.smrtb.rtb4j.library.rtb.pipeline.BidderContext}
+ * set a <i>skipReason</i> on the {@link com.smrtb.rtb4j.library.rtb.pipeline.auction.BidderContext}
  * if deemed ineligible for a request further down the pipeline
  */
 public class BiddersMatchingStage implements AuctionStage<AuctionContext> {
