@@ -26,6 +26,8 @@ public class Main {
     public static void main(String[] args) throws InterruptedException {
         log.info("rtb4j-reset starting");
 
+        TelemetryProvider.registerGlobal();
+
         Rtb4j rtb4j = new Rtb4j(new RtbConfig()
                 .setNotifications(new RtbConfig.NotificationConfig()
                         .setDomain("localhost:8080")

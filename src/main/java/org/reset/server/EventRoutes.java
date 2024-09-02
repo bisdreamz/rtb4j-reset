@@ -3,12 +3,9 @@ package org.reset.server;
 import com.smrtb.rtb4j.library.RtbConfig;
 import com.smrtb.rtb4j.library.pipeline.AuctionPipeline;
 import com.smrtb.rtb4j.library.rtb.WebServer;
-import com.smrtb.rtb4j.library.rtb.common.cache.TrackerValueCache;
 import com.smrtb.rtb4j.library.rtb.pipeline.event.NotificationEvent;
-import com.smrtb.rtb4j.library.rtb.stages.event.ImpressionLoggingStage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.reset.pipeline.stages.auction.event.EventImpDedupeStage;
 
 public class EventRoutes {
 

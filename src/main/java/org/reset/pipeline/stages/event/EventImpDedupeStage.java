@@ -1,11 +1,10 @@
-package org.reset.pipeline.stages.auction.event;
+package org.reset.pipeline.stages.event;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.smrtb.rtb4j.library.pipeline.AuctionStage;
 import com.smrtb.rtb4j.library.pipeline.StageState;
 import com.smrtb.rtb4j.library.rtb.common.EventBlockReasons;
-import com.smrtb.rtb4j.library.rtb.common.models.SkipReason;
 import com.smrtb.rtb4j.library.rtb.pipeline.event.NotificationEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
