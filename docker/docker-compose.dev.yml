@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  app:
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/app # Mount source code for live development
+    environment:
+      - JAVA_OPTS=-Xms512m -Xmx1024m
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"

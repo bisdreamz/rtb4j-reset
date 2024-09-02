@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    environment:
+      - JAVA_OPTS=-Xms512m -Xmx4096m
+    networks:
+      - app-network
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
+  alloy:
+    image: grafana/alloy:latest
+    ports:
+      - "4317:4317"
+      - "4318:4318"
+    volumes:
+      - ./docker/config.alloy:/app/config.alloy
+    command: run ./app/config.alloy
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

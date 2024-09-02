@@ -8,6 +8,7 @@ import io.opentelemetry.sdk.metrics.export.PeriodicMetricReader;
 import io.opentelemetry.sdk.resources.Resource;
 import io.opentelemetry.sdk.trace.SdkTracerProvider;
 import io.opentelemetry.sdk.trace.export.SimpleSpanProcessor;
+import io.opentelemetry.sdk.trace.samplers.Sampler;
 import io.opentelemetry.semconv.resource.attributes.ResourceAttributes;
 
 import java.time.Duration;
@@ -34,6 +35,7 @@ public class TelemetryProvider {
         // Create the TracerProvider with the Span Exporter
         SdkTracerProvider tracerProvider = SdkTracerProvider.builder()
                 .setResource(resource)
+                .setSampler(Sampler.traceIdRatioBased(0.01))
                 .addSpanProcessor(SimpleSpanProcessor.create(spanExporter))
                 .build();
 
@@ -41,7 +43,7 @@ public class TelemetryProvider {
         SdkMeterProvider meterProvider = SdkMeterProvider.builder()
                 .setResource(resource)
                 .registerMetricReader(PeriodicMetricReader.builder(metricExporter)
-                        .setInterval(Duration.ofSeconds(30))  // Export metrics every 10 seconds
+                        .setInterval(Duration.ofSeconds(15))  // Export metrics every 10 seconds
                         .build())
                 .build();
 
