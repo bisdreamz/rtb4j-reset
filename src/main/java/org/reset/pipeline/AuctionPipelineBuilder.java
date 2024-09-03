@@ -4,7 +4,9 @@ import com.smrtb.rtb4j.library.Rtb4j;
 import com.smrtb.rtb4j.library.pipeline.AuctionPipeline;
 import com.smrtb.rtb4j.library.pipeline.TaskPipeline;
 import com.smrtb.rtb4j.library.rtb.NotificationUrlProducer;
+import com.smrtb.rtb4j.library.rtb.common.DbIpLocationClient;
 import com.smrtb.rtb4j.library.rtb.common.Ip2LocationClient;
+import com.smrtb.rtb4j.library.rtb.common.IpLookupClient;
 import com.smrtb.rtb4j.library.rtb.common.cache.LocalTrackerCache;
 import com.smrtb.rtb4j.library.rtb.common.cache.TrackerValueCache;
 import com.smrtb.rtb4j.library.rtb.pipeline.auction.AuctionContext;
@@ -25,8 +27,7 @@ public class AuctionPipelineBuilder {
         TrackerValueCache trackerCache = new LocalTrackerCache();
 
         // These may be shared, but have required startup or shutdown lifecycle hooks
-        Ip2LocationClient ip2location = new Ip2LocationClient("DB3", true, true,
-                "LbdBrpQmS3LqpMQqkAmyv0bhha3HPkNLClojFvPxi93cX30eWKsa0ITPDh49NLRy");
+        IpLookupClient ipLookupClient = new DbIpLocationClient();
         DeviceLookupYauaaStage deviceLookupYauaaStage = new DeviceLookupYauaaStage();
         BiddersRtbRequestStage rtbRequestStage = new BiddersRtbRequestStage(rtb4j);
         BigqueryDbStage dbStage = new BigqueryDbStage(rtb4j,
@@ -35,7 +36,7 @@ public class AuctionPipelineBuilder {
         // Register stages in order which an auction request will flow through
         pipeline.then("BidReqDefaults", new BidRequestBasicDefaultsStage());
         pipeline.then("BidReqValidator", new BidRequestMinimalValidatorStage());
-        pipeline.then("IPLookup", new BidRequestIPInfoStage(ip2location));
+        pipeline.then("IPLookup", new BidRequestIPInfoStage(ipLookupClient));
         pipeline.then("DeviceLookupYauaa", deviceLookupYauaaStage);
         //pipeline.then("BidderAdapters", new BidderRtbAdapterStage()
         //                .adapter(bidders.getFirst(), new SampleBidderAdapter()));
@@ -49,12 +50,12 @@ public class AuctionPipelineBuilder {
         pipeline.always("PublisherRequestTelemetryStage", new PublisherRequestTelemetryStage());
         pipeline.always("BidderTelemetryStage", new BidderTelemetryStage());
 
-        startupPipeline.register(ip2location::startup);
+        startupPipeline.register(ipLookupClient::startup);
         startupPipeline.register(rtbRequestStage::startup);
         startupPipeline.register(dbStage::startup);
 
         shutdownPipeline.register(rtbRequestStage::shutdown);
-        shutdownPipeline.register(ip2location::shutdown);
+        shutdownPipeline.register(ipLookupClient::shutdown);
         shutdownPipeline.register(deviceLookupYauaaStage::shutdown);
         shutdownPipeline.register(dbStage::shutdown);
 
