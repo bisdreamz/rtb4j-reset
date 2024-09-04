@@ -5,17 +5,15 @@ import com.smrtb.rtb4j.library.pipeline.AuctionPipeline;
 import com.smrtb.rtb4j.library.pipeline.TaskPipeline;
 import com.smrtb.rtb4j.library.rtb.NotificationUrlProducer;
 import com.smrtb.rtb4j.library.rtb.common.DbIpLocationClient;
-import com.smrtb.rtb4j.library.rtb.common.Ip2LocationClient;
 import com.smrtb.rtb4j.library.rtb.common.IpLookupClient;
-import com.smrtb.rtb4j.library.rtb.common.cache.LocalTrackerCache;
+import com.smrtb.rtb4j.library.rtb.common.cache.RedisTrackerCache;
 import com.smrtb.rtb4j.library.rtb.common.cache.TrackerValueCache;
 import com.smrtb.rtb4j.library.rtb.pipeline.auction.AuctionContext;
 import com.smrtb.rtb4j.library.rtb.stages.auction.*;
 import com.smrtb.rtb4j.library.store.bq.BigQueryStore;
+import io.lettuce.core.api.StatefulRedisConnection;
 import org.reset.pipeline.stages.auction.BiddersMatchingStage;
 import org.reset.pipeline.stages.auction.BigqueryDbStage;
-
-import java.util.List;
 
 public class AuctionPipelineBuilder {
 
@@ -24,7 +22,9 @@ public class AuctionPipelineBuilder {
         AuctionPipeline pipeline = new AuctionPipeline(rtb4j);
 
         // These are classes which we must inject and are shared dependencies
-        TrackerValueCache trackerCache = new LocalTrackerCache();
+        StatefulRedisConnection<String, String> redisBidCache = RedisConnectionFactory.get(
+                System.getenv("REDIS_BID_CACHE"), null);
+        TrackerValueCache trackerCache = new RedisTrackerCache(redisBidCache);
 
         // These may be shared, but have required startup or shutdown lifecycle hooks
         IpLookupClient ipLookupClient = new DbIpLocationClient();
@@ -43,6 +43,7 @@ public class AuctionPipelineBuilder {
         pipeline.then("BiddersMatching", new BiddersMatchingStage());
         pipeline.then("MultiImpBreakout", new BidderMultiImpBreakoutStage());
         pipeline.then("BidderAuctions",  rtbRequestStage);
+        pipeline.then("ForceTestBidderStage", new ForceBidStage());
         pipeline.then("SimpleTracker", new NotificationInjectionStage(new NotificationUrlProducer(
                 rtb4j.conf().getNotifications()), trackerCache));
         pipeline.then("CompileResponse", new BidResponseAggregationStage());

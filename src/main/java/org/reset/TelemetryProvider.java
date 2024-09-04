@@ -10,10 +10,14 @@ import io.opentelemetry.sdk.trace.SdkTracerProvider;
 import io.opentelemetry.sdk.trace.export.SimpleSpanProcessor;
 import io.opentelemetry.sdk.trace.samplers.Sampler;
 import io.opentelemetry.semconv.resource.attributes.ResourceAttributes;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.time.Duration;
 
 public class TelemetryProvider {
+
+    private static final Logger log = LogManager.getLogger(TelemetryProvider.class);
 
     public static void registerGlobal() {
         Resource resource = Resource.getDefault()
@@ -22,14 +26,20 @@ public class TelemetryProvider {
                         .put(ResourceAttributes.K8S_POD_NAME, System.getenv("HOSTNAME"))
                         .build());
 
+        String endpoint = System.getenv("OTEL_EXPORTER_OTLP_ENDPOINT");
+        if (endpoint == null || endpoint.isEmpty()) {
+            log.warn("Env OTEL_EXPORTER_OTLP_ENDPOINT not set, not exporting otel metrics!");
+            return;
+        }
+
         // Configure the OTLP Span Exporter for tracing
         OtlpGrpcSpanExporter spanExporter = OtlpGrpcSpanExporter.builder()
-                .setEndpoint("http://localhost:4317")  // SigNoz collector endpoint for tracing
+                .setEndpoint(endpoint)  // SigNoz collector endpoint for tracing
                 .build();
 
         // Configure the OTLP Metric Exporter
         OtlpGrpcMetricExporter metricExporter = OtlpGrpcMetricExporter.builder()
-                .setEndpoint("http://localhost:4317")  // SigNoz collector endpoint for metrics
+                .setEndpoint(endpoint)  // SigNoz collector endpoint for metrics
                 .build();
 
         // Create the TracerProvider with the Span Exporter

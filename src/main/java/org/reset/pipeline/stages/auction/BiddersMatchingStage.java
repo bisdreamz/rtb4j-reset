@@ -20,8 +20,8 @@ public class BiddersMatchingStage implements AuctionStage<AuctionContext> {
 
         // Example useage of setting an NBR if we didnt have any dynamically
         // matching bidders based on any pretargeting rules e.g. GEO
-        //stageState.context().setNoBidReason(
-        //        NoBidReasons.NO_MATCHING_BIDDERS.ofDescription("No pretargeting bidder matches"));
+       // stageState.context().setNoBidReason(
+         //       NoBidReasons.NO_MATCHING_BIDDERS.ofDescription("No pretargeting bidder matches"));
 
         return CompletableFuture.completedFuture(stageState.context());
     }

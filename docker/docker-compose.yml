@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   app:
     build:
@@ -7,6 +5,7 @@ services:
       dockerfile: Dockerfile
     environment:
       - JAVA_OPTS=-Xms512m -Xmx4096m
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://alloy:4317
     networks:
       - app-network
     ports:
@@ -19,10 +18,12 @@ services:
       - "4317:4317"
       - "4318:4318"
     volumes:
-      - ./docker/config.alloy:/app/config.alloy
-    command: run ./app/config.alloy
+      - ./config.alloy:/etc/alloy/config.alloy  # Map the config.alloy file
+    environment:
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://alloy:4317
     networks:
       - app-network
+    command: run /etc/alloy/config.alloy
 
 networks:
   app-network:

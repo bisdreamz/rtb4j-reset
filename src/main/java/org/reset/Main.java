@@ -16,6 +16,7 @@ import org.reset.server.EventRoutes;
 import org.reset.server.ServerRoutes;
 import org.reset.pipeline.AuctionPipelineBuilder;
 
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 
@@ -30,13 +31,16 @@ public class Main {
 
         Rtb4j rtb4j = new Rtb4j(new RtbConfig()
                 .setNotifications(new RtbConfig.NotificationConfig()
-                        .setDomain("localhost:8080")
+                        .setDomain("localhost")
                         .setBasePath("/events")
                         .setFields(new NotificationFields())
                         .setSslOnly(false))
                 .setSchainDomain("resetdigital.co"),
                 new VertxOptions().setPreferNativeTransport(true)
-        );
+        ).setHost(System.getenv("HOST"))
+         .setPort(Integer.parseInt(Objects.requireNonNullElse(System.getenv("PORT"), "8080")));
+
+        log.debug("Will listen on {}:{}", rtb4j.getHost(), rtb4j.getPort());
 
         TaskPipeline startupPipeline = new TaskPipeline(true);
         TaskPipeline shutdownPipeline = new TaskPipeline(false);

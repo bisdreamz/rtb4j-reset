@@ -22,8 +22,6 @@ WORKDIR /app
 # Copy the built jar file from the previous stage
 COPY --from=build /app/target/rtb4j-reset-1.0-SNAPSHOT.jar rtb4j-reset.jar
 
-COPY docker/config.alloy .
-
 # Expose the port your application runs on
 EXPOSE 8080
 
