@@ -1,12 +1,15 @@
 services:
-  app:
+  rtb4j-reset:
     ports:
       - "8080:8080"
     environment:
       - JAVA_OPTS=-Xms512m -Xmx1024m
       - HOST=0.0.0.0
       - PORT=8080
+      - PUBLIC_HOST=localhost:8080
       - REDIS_BID_CACHE=redis://redis:6379
+      - DEV_SKIP_BIDDER_AUCTIONS=false
+      - DEV_SKIP_FORCE_BIDDER=false
     restart: unless-stopped
     logging:
       driver: "json-file"

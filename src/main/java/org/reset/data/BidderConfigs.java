@@ -13,7 +13,7 @@ public class BidderConfigs {
                 .setBidderName("Test Bidder")
                 .setName("Test Bidder Endpoint 1")
                 .setId("bidder_id_test_endpoint_1")
-                .setUrl("http://localhost:8081/auction")
+                .setUrl("http://host.docker.internal:8081/auction")
                 .setOpenrtbVersion(OpenrtbVersions.V_2_6)
                 .setMultiImpSupport(true)
         );

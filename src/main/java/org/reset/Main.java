@@ -31,7 +31,7 @@ public class Main {
 
         Rtb4j rtb4j = new Rtb4j(new RtbConfig()
                 .setNotifications(new RtbConfig.NotificationConfig()
-                        .setDomain("localhost")
+                        .setDomain(Objects.requireNonNullElse(System.getenv("PUBLIC_HOST"), "localhost"))
                         .setBasePath("/events")
                         .setFields(new NotificationFields())
                         .setSslOnly(false))
