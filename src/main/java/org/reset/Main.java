@@ -5,13 +5,18 @@ import com.smrtb.rtb4j.library.RtbConfig;
 import com.smrtb.rtb4j.library.pipeline.TaskPipeline;
 import com.smrtb.rtb4j.library.rtb.WebServer;
 import com.smrtb.rtb4j.library.rtb.common.NotificationFields;
+import com.smrtb.rtb4j.library.rtb.common.cache.LocalTrackerCache;
+import com.smrtb.rtb4j.library.rtb.common.cache.RedisTrackerCache;
+import com.smrtb.rtb4j.library.rtb.common.cache.TrackerValueCache;
 import com.smrtb.rtb4j.library.rtb.pipeline.auction.AuctionContext;
 import com.smrtb.rtb4j.library.rtb.pipeline.event.NotificationEvent;
+import io.lettuce.core.api.StatefulRedisConnection;
 import io.vertx.core.VertxOptions;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.reset.pipeline.EventPipelineBuilder;
 import org.reset.pipeline.PipelineContext;
+import org.reset.pipeline.RedisConnectionFactory;
 import org.reset.server.EventRoutes;
 import org.reset.server.ServerRoutes;
 import org.reset.pipeline.AuctionPipelineBuilder;
@@ -50,12 +55,27 @@ public class Main {
         WebServer server = new WebServer(rtb4j);
         shutdownPipeline.register(server::shutdown);
 
+        // Determine which cache to use for partner BURLs
+        // Redis will handle production where any node can handle a burl
+        // even if the bid originated from a different server
+        TrackerValueCache trackerCache;
+        final String burlRedis = System.getenv("REDIS_BID_CACHE");
+        if (burlRedis != null && !burlRedis.isEmpty()) {
+            StatefulRedisConnection<String, String> redisBidCache
+                    = RedisConnectionFactory.get(burlRedis, null);
+            trackerCache = new RedisTrackerCache(redisBidCache);
+            log.info("Found REDIS_BID_CACHE, using redis for burl cache");
+        } else {
+            log.info("Using local tracker cache for burls");
+            trackerCache = new LocalTrackerCache();
+        }
+
         // This helper method will register pipeline stages and
         // related startup/shutdown tasks
         PipelineContext<AuctionContext> rqPipelineCtx // for auction requests
-                = AuctionPipelineBuilder.build(rtb4j, startupPipeline, shutdownPipeline);
+                = AuctionPipelineBuilder.build(rtb4j, startupPipeline, shutdownPipeline, trackerCache);
         PipelineContext<NotificationEvent> eventPipelineCtx // for handling imp/burl events
-                = EventPipelineBuilder.build(rtb4j, startupPipeline, shutdownPipeline);
+                = EventPipelineBuilder.build(rtb4j, startupPipeline, shutdownPipeline, trackerCache);
 
         // Start web server after other dependencies are ready
         startupPipeline.register(server::startup);

@@ -13,16 +13,16 @@ import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * Filters to handle billable impression events (adm beacon or burl)
+ * Filter for {@link com.smrtb.rtb4j.library.rtb.common.cache.LocalTrackerCache} to handle billable impression events (adm beacon or burl)
  * and keeps a local cache to avoid known duplicate calls
  */
-public class EventImpDedupeStage implements AuctionStage<NotificationEvent> {
+public class LocalEventImpDedupeStage implements AuctionStage<NotificationEvent> {
 
-    private static final Logger log = LogManager.getLogger(EventImpDedupeStage.class);
+    private static final Logger log = LogManager.getLogger(LocalEventImpDedupeStage.class);
 
     private final Cache<String, String> cache;
 
-    public EventImpDedupeStage() {
+    public LocalEventImpDedupeStage() {
         this.cache = Caffeine.newBuilder().expireAfterWrite(Duration.ofMinutes(30)).build();
     }
 
