@@ -1,5 +1,5 @@
 # rtb4j-reset
-MVP of project for Reset+RTB4J
+Demo project of RTB4j programmatic library
 
 To build:
 ``` docker compose -f docker/docker-compose.yml build --no-cache```
